@@ -2,13 +2,12 @@ __author__ = 'Govnocode('
 
 import sqlite3
 import subprocess
-from var_dump import var_dump
 import time
 import json
 from socket import socket, gethostbyname, AF_INET, SOCK_STREAM
 
 
-con=sqlite3.connect('test')
+con=sqlite3.connect('test.db')
 cur = con.cursor()
 build_session = str(time.time())
 sshparams='-i /var/lib/postgresql/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=10'
@@ -284,7 +283,7 @@ def build_phpfpm(data, groupid):
 
 
 def build_tpl(name):
-    subprocess.call('cd docker/'+name+'/&&docker build  -t '+name+' .', shell=True)
+    subprocess.call('cd docker/'+name+'/&&docker build --no-cache -t '+name+' .', shell=True)
 """
 def main():
     for groupid in target:
@@ -297,7 +296,7 @@ def main():
                 build_nginx(target[groupid]['docker'][type], groupid)
 
 main()"""
-subprocess.call('brctl addbr br1&&ifconfig br1 192.168.55.254 netmask 255.255.255.0')
+subprocess.call('brctl addbr br1&&ifconfig br1 192.168.55.254 netmask 255.255.255.0', shell=True)
 build_postgres(postgres, 1)
 build_phpfpm(phpfpm, 1)
 build_nginx(nginx, 1)
