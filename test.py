@@ -7,7 +7,7 @@ import json
 from socket import socket, gethostbyname, AF_INET, SOCK_STREAM
 
 
-con=sqlite3.connect('test')
+con=sqlite3.connect('test.db')
 cur = con.cursor()
 build_session = str(time.time())
 sshparams='-i /home/alexa/works/dima/virt/builder/docker/ssh_keys/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=10'
