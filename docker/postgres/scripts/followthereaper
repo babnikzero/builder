@@ -1,0 +1,20 @@
+#!/bin/bash -x
+source $(dirname $0)/common
+#Узел назначения
+TARGET_IP=$1
+# Ip мастера
+PRIMARY_IP=$2
+# Путь к каталогу $PGDATA slave
+SLAVE_DATA=$3
+#id ноды
+TARGET_ID=$4
+#id упавшей ноды
+FALLING_NODE=$5
+if [ $FALLING_NODE = $TARGET_ID ]; then
+	exit 0
+fi;
+
+
+ssh -T $SSH_PARAMS postgres@$TARGET_IP "$SLAVE_DATA/scripts/init_slave follow $SLAVE_DATA $PRIMARY_IP"
+
+/usr/sbin/pcp_attach_node 10 $POOL_HOST 9898 postgres qwerty $TARGET_ID

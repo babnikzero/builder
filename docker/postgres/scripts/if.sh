@@ -1,0 +1,10 @@
+#!/bin/bash -x
+source $(dirname $0)/common
+#Метод, пробрасывается насквозь
+MODE=$1
+#Требуемый IP, пробрасывается насквозь
+IP=$2
+#системное имя хоста
+HOST_NAME=`hostname`
+
+ssh -T $SSH_PARAMS root@$PARRENT_HOST "$PARRENT_PIPEWORK br1 -i eth2 $MODE $HOST_NAME $IP/24"

@@ -1,0 +1,56 @@
+#!/bin/bash
+
+#Режим работы скрипта conf pooladd nodeadd
+MODE=$1
+#Адрес добовляемого хоста
+HOST=$2
+#Порт добовляемого хоста/PARRENT_HOST
+PRT=$3
+#Номер хоста/группы
+ID=$4
+copy_conf(){
+	TMP=$(ifconfig eth0| sed -n '2 {s/^.*inet addr:\([0-9.]*\) .*/\1/;p}')
+	sudo chown -R postgres /etc/pgpool2/
+	cp /var/lib/postgresql/9.2/main/scripts/config/pgpool.conf /etc/pgpool2/
+	cp /var/lib/postgresql/9.2/main/scripts/config/pcp.conf /etc/pgpool2/
+	cp /var/lib/postgresql/9.2/main/scripts/config/pool_hba.conf /etc/pgpool2/
+	cp /var/lib/postgresql/9.2/main/scripts/config/pool_passwd /etc/pgpool2/
+	echo "wd_hostname = '$TMP'">>/etc/pgpool2/pgpool.conf
+	echo "delegate_IP = '$HOST'">>/etc/pgpool2/pgpool.conf
+	echo "export POOL_HOST=$HOST">>/var/lib/postgresql/9.2/main/scripts/common
+	echo "export PARRENT_HOST=$PRT">>/var/lib/postgresql/9.2/main/scripts/common
+	echo "export GROUP=$ID">>/var/lib/postgresql/9.2/main/scripts/common
+}
+nodeadd(){
+	echo "backend_hostname$ID = '$HOST'" >> /etc/pgpool2/pgpool.conf
+	echo "backend_port$ID = $PRT" >> /etc/pgpool2/pgpool.conf
+	echo "backend_weight$ID = 1" >> /etc/pgpool2/pgpool.conf
+	echo "backend_data_directory$ID = '/var/lib/postgresql/9.2/main'" >> /etc/pgpool2/pgpool.conf
+	echo "backend_flag$ID = 'ALLOW_TO_FAILOVER'" >> /etc/pgpool2/pgpool.conf
+}
+pooladd(){
+	echo "heartbeat_destination$ID = '$HOST'" >> /etc/pgpool2/pgpool.conf
+	echo "heartbeat_destination_port$ID = 9694" >> /etc/pgpool2/pgpool.conf
+	echo "other_pgpool_hostname$ID = '$HOST'" >> /etc/pgpool2/pgpool.conf
+	echo "other_pgpool_port$ID = $PRT" >> /etc/pgpool2/pgpool.conf
+	echo "other_wd_port$ID = 9000" >> /etc/pgpool2/pgpool.conf
+}
+
+case "$MODE" in
+    conf)
+	copy_conf
+	#sudo /etc/init.d/pgpool2 restart
+        ;;
+    pooladd)
+        pooladd
+	#sudo /etc/init.d/pgpool2 restart
+        ;;
+    nodeadd)
+        nodeadd
+	#sudo /etc/init.d/pgpool2 restart
+        ;;
+    *)
+        echo "Usage: $0 {conf|pooladd|nodeadd} HOST PRT ID"
+        exit 1
+        ;;
+esac

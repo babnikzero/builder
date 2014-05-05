@@ -1,0 +1,9 @@
+#!/bin/bash
+
+ping -c 1 195.5.12.11 > /dev/null 2>&1
+RES=$?
+if [ $RES = 0 ]; then
+	echo true
+else
+	echo false
+fi

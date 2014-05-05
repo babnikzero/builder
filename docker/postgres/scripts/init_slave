@@ -1,0 +1,78 @@
+#!/bin/bash
+
+# Ip мастера
+PRIMARY_IP=$3
+# Путь к каталогу $PGDATA на ведомом сервере
+SLAVE_DATA=$2
+#Режим работы скрипта follow, conf или sync
+MODE=$1
+#Путь к временному каталогу с бекапом
+TMP_DATA=/tmp/pg_db
+
+
+
+copy_db(){
+	mkdir $TMP_DATA
+	#Снимаем бекап с мастера
+	pg_basebackup -h $PRIMARY_IP -U postgres -xlog-method=stream -D $TMP_DATA
+	cp -R $TMP_DATA/* $SLAVE_DATA
+	rm -rf $TMP_DATA
+}
+
+copy_conf(){
+	#Устанавливаем конфиги
+	cp $SLAVE_DATA/scripts/config/postgresql.conf /etc/postgresql/9.2/main/postgresql.conf
+	cp $SLAVE_DATA/scripts/config/pg_hba.conf /etc/postgresql/9.2/main/pg_hba.conf
+}
+
+create_conf(){
+	echo "standby_mode = 'on'" > $SLAVE_DATA/recovery.conf
+	echo "primary_conninfo = 'host=$PRIMARY_IP port=5432 user=postgres'" >> $SLAVE_DATA/recovery.conf
+	echo "trigger_file = 'failover'" >> $SLAVE_DATA/recovery.conf	
+}
+
+set_pool_addr(){
+	echo "export POOL_HOST=$PRIMARY_IP" >> $SLAVE_DATA/scripts/common
+}
+
+case "$MODE" in
+    sync)
+        /etc/init.d/postgresql stop
+	copy_db
+	copy_conf
+	create_conf
+	/etc/init.d/postgresql start
+        ;;
+    follow)
+        create_conf
+	/etc/init.d/postgresql restart
+        ;;
+    copy)
+        copy_conf
+	/etc/init.d/postgresql restart
+        ;;
+     pooladrr)
+        set_pool_addr
+        ;;
+    *)
+        echo "Usage: $0 {follow|sync|copy|pooladrr} SLAVE_DATA PRIMARY_IP"
+        exit 1
+        ;;
+esac
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

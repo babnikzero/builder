@@ -1,0 +1,12 @@
+#!/bin/bash
+source scripts/common
+if [ $# -ne 2 ]
+then
+    echo "pgpool_remote_start remote_host remote_datadir"
+    exit 1
+fi
+
+DEST=$1
+DESTDIR=$2
+
+ssh -T $SSH_PARAMS postgres@$DEST "/etc/init.d/postgresql restart"

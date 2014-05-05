@@ -1,0 +1,22 @@
+#!/bin/bash -x
+source scripts/common
+# Путь к каталогу $PGDATA master
+PRIMARY_DATA=$1
+# IP-адрес slave, который включается в кластер
+SLAVE_IP=$2
+# Путь к каталогу $PGDATA на slave
+SLAVE_DATA=$3
+
+
+# Определяем IP master для включения в конфиг recovery.conf
+PRIMARY_IP=$(PGPASSWORD=qwerty psql -p $POOL_PORT -h $POOL_HOST -U postgres -c "SHOW pool_nodes;"|grep primary|awk '{print $3}')
+
+# На master удаляем старые конфиги от репликации
+cd $PRIMARY_DATA
+rm -f recovery.* failover 
+
+
+#Удаленно останавливаем slave
+
+ssh -T $SSH_PARAMS postgres@$SLAVE_IP "$SLAVE_DATA/scripts/init_slave sync $SLAVE_DATA $PRIMARY_IP "
+

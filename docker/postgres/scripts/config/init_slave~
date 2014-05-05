@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Путь к каталогу $PGDATA на ведущем сервере
+PRIMARY_IP=$1
+# Путь к каталогу $PGDATA на ведомом сервере
+SLAVE_DATA=$2
+#Путь к временному каталогу с бекапом
+TMP_DATA=/tmp/pg_db
+
+#Останавливаем демон
+/etc/init.d/postgresql stop
+
+mkdir $TMP_DATA
+#Снимаем бекап с мастера
+pg_basebackup -h $PRIMARY_IP -U postgres -xlog-method=stream -D $TMP_DATA
+cp -R $TMP_DATA/* $SLAVE_DATA
+#Устанавливаем конфиги
+cp config/postgresql.conf /etc/postgresql/9.2/main/postgresql.conf
+cp config/pg_hba.conf /etc/postgresql/9.2/main/pg_hba.conf
+
+echo "standby_mode = 'on'" > $SLAVE_DATA/recovery.conf
+echo "primary_conninfo = 'host=$PRIMARY_IP port=5432 user=postgres'" >> $SLAVE_DATA/recovery.conf
+echo "trigger_file = 'failover'" >> $SLAVE_DATA/recovery.conf
+
+rm -rf $TMP_DATA
+
