@@ -1,5 +1,5 @@
 #!/bin/bash
-export GROUP='1'
-export PARRENT_HOST=
+#export GROUP='1'
+#export PARRENT_HOST=
 export PARRENT_PIPEWORK='/home/babnik/testjob/virtual/pipework/pipework'
 export SSH_PARAMS="-i /var/lib/postgresql/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=10"

@@ -3,7 +3,6 @@ __author__ = 'Govnocode('
 import sqlite3
 import subprocess
 import time
-import json
 from socket import socket, gethostbyname, AF_INET, SOCK_STREAM
 
 

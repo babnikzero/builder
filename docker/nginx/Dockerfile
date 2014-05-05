@@ -1,6 +1,6 @@
 ###NGINX###
 
-FROM ubuntu
+FROM ubuntu:12.04
 
 RUN RUNLEVEL=1 DEBIAN_FRONTEND=noninteractive apt-get install -q -y openssh-server sudo wget nginx openssh-client python-pip python-argparse
 RUN pip install pynginxconfig

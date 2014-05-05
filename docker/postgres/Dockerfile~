@@ -6,7 +6,7 @@ FROM ubuntu
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" >> /etc/apt/sources.list
 RUN apt-get update -q
-RUN RUNLEVEL=1 DEBIAN_FRONTEND=noninteractive apt-get install -q -y postgresql-9.2 postgresql-9.2-pgpool2 openssh-server sudo wget rsync openssh-client pgpool2
+RUN RUNLEVEL=1 DEBIAN_FRONTEND=noninteractive apt-get install -q -y postgresql-9.2 postgresql-9.2-pgpool2 openssh-server sudo wget rsync openssh-client pgpool2 
 
 #Тюним ssh
 RUN mkdir -p /var/run/sshd
@@ -59,6 +59,7 @@ EXPOSE 5432
 EXPOSE 5433
 EXPOSE 9694
 EXPOSE 9000
+EXPOSE 9898
 USER root
 
 #Подключаем тома для каталогов базы(на всякий пожарный)

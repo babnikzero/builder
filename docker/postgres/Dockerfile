@@ -1,12 +1,12 @@
 ###PG_SLAVE_CONFIG###
 
-FROM ubuntu
+FROM ubuntu:12.04
 
 #Добавляем репозитарий и ставим необходимые пакеты
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" >> /etc/apt/sources.list
 RUN apt-get update -q
-RUN RUNLEVEL=1 DEBIAN_FRONTEND=noninteractive apt-get install -q -y postgresql-9.2 postgresql-9.2-pgpool2 openssh-server sudo wget rsync openssh-client pgpool2
+RUN RUNLEVEL=1 DEBIAN_FRONTEND=noninteractive apt-get install -q -y postgresql-9.2 postgresql-9.2-pgpool2 openssh-server sudo wget rsync openssh-client pgpool2 
 
 #Тюним ssh
 RUN mkdir -p /var/run/sshd

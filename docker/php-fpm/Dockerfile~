@@ -2,7 +2,7 @@
 FROM ubuntu
 
 RUN apt-get update -q
-RUN RUNLEVEL=1 DEBIAN_FRONTEND=noninteractive apt-get install -q -y openssh-server wget rsync openssh-client git php5-fpm php5-pgsql php5-mcrypt php5-cli
+RUN RUNLEVEL=1 DEBIAN_FRONTEND=noninteractive apt-get install -q -y openssh-server wget rsync openssh-client git php5-fpm php5-pgsql php5-mcrypt php5-cli curl php5-curl
 
 #Тюним ssh
 RUN mkdir -p /var/run/sshd

@@ -1,5 +1,5 @@
 
-FROM ubuntu
+FROM ubuntu:12.04
 
 RUN apt-get update -q
 RUN RUNLEVEL=1 DEBIAN_FRONTEND=noninteractive apt-get install -q -y openssh-server wget rsync openssh-client git php5-fpm php5-pgsql php5-mcrypt php5-cli curl php5-curl

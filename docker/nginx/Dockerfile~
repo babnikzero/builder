@@ -14,7 +14,6 @@ RUN sed 's/#PermitEmptyPasswords no/PermitEmptyPasswords no/' -i /etc/ssh/sshd_c
 RUN mkdir -p /root/.ssh/
 ADD ssh_keys/id_rsa /root/.ssh/
 ADD ssh_keys/authorized_keys /root/.ssh/
-RUN chown -R www-data:www-data /root/.ssh/ 
 RUN chmod -R 700 /root/.ssh/
 ADD scripts/ /root/scripts/
 RUN chmod +x /root/scripts/*
