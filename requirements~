@@ -1,8 +1,0 @@
-docker
-bridge-utils
-python
-root :)
-
-изменить значение переменной PARRENT_PIPEWORK в builder/docker/postgres/scripts/common на абсолютный путь к builder/pipework_moded/pipework в ХОСТ системе, добавить builder/docker/postgres/ssh_keys/authorized_keys руту(для авторизации без пароля контейнеров на хост машине), изменить sshparam в test.py '-i /var/lib/postgresql/.ssh/id_rsa' на '/путь/к/проекту/на/хост/системе'(builder/docker/ssh_keys)
-
-Понимаю что "такие" скрипты писать нельзя, но время вышло, показываю что есть ....
